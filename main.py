@@ -1,32 +1,43 @@
-import os, argparse
 from dotenv import load_dotenv
 from google import genai
+import os, argparse
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
 
-if api_key == None:
-    raise RuntimeError("API Key not found")
-
-client = genai.Client(api_key=api_key)
+if api_key is None:
+        raise RuntimeError("API Key not found")
 
 def main():
-    response = llm_request("Why is Boot.dev such a great place to learn backend development? Use one paragraph maximum.")
+    args = get_cl_arg()
+    user_prompts = [genai.types.Content(
+         role="user",
+         parts=[genai.types.Part(text=args.user_prompt)]
+    )]
+    
+    response = llm_request(user_prompts)
     display_token_data(metadata=response.usage_metadata)
 
-    print(f"Repsonse:\n{response.text}")
+    print(f"Response:\n{response.text}")
 
 
-def llm_request(content: str):
+def get_cl_arg():
+    parser = argparse.ArgumentParser(description="Chatbot")
+    parser.add_argument("user_prompt", type=str, help="User prompt")
+    return parser.parse_args()
+
+
+def llm_request(contents: list[genai.types.Content]):    
+    client = genai.Client(api_key=api_key)
     model = 'gemini-2.5-flash'
     
     return client.models.generate_content(
-        model=model, contents=content
+        model=model, contents=contents # type: ignore
     )
 
 
 def display_token_data(metadata):
-    if metadata == None:
+    if metadata is None:
         raise RuntimeError("API Request FAILED!")
     else:
         print(f"Prompt tokens: {metadata.prompt_token_count}")
