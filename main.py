@@ -14,16 +14,19 @@ def main():
          role="user",
          parts=[genai.types.Part(text=args.user_prompt)]
     )]
-    
-    response = llm_request(user_prompts)
-    display_token_data(metadata=response.usage_metadata)
 
+    response = llm_request(user_prompts)
+    if args.verbose:
+        print(f"User prompt: {args.user_prompt}")  
+        display_token_data(metadata=response.usage_metadata)
+        
     print(f"Response:\n{response.text}")
 
 
 def get_cl_arg():
     parser = argparse.ArgumentParser(description="Chatbot")
     parser.add_argument("user_prompt", type=str, help="User prompt")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
     return parser.parse_args()
 
 
