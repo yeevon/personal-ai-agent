@@ -6,6 +6,6 @@ def get_abs_path(working_directory, path):
     is_valid_dir = os.path.commonpath([working_dir_abs, target_dir]) == working_dir_abs
 
     if not is_valid_dir:
-        raise RuntimeError(f'Error: Cannot read "{path}" as it is outside the permitted working directory')
+        raise RuntimeError(f'Cannot read/write "{path}" as it is outside the permitted working directory')
     
     return target_dir
