@@ -1,16 +1,10 @@
 import os
+from functions.helper_funcitons import get_abs_path
 from config import MAX_CHARS
-from pathlib import Path
 
 def get_file_content(working_directory, file_path):
     try:
-        working_dir_abs = os.path.abspath(working_directory)
-        target_dir = os.path.normpath(os.path.join(working_dir_abs, file_path))
-        is_valid_dir = os.path.commonpath([working_dir_abs, target_dir]) == working_dir_abs
-
-        if not is_valid_dir:
-            return f'Error: Cannot read "{file_path}" as it is outside the permitted working directory'
-        
+        target_dir = get_abs_path(working_directory=working_directory, path=file_path)        
         if not os.path.isfile(target_dir):
             return f"Error: \"{target_dir}\" is not a file"
         
@@ -30,4 +24,4 @@ def read_file(target_dir) -> str:
         return content 
 
     except Exception as err:
-        raise RuntimeError(f"read_file failed: No such file or dir was found. - '{target_dir}'")
+        raise RuntimeError(f"read_file failed: No such file or dir was found. - '{target_dir}' - {err}")

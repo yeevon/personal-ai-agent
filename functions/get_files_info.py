@@ -1,16 +1,11 @@
 import os
+from functions.helper_funcitons import get_abs_path
 from pathlib import Path
 
 def get_files_info(working_directory, directory ="."):
     file_data = []
     try:
-        working_dir_abs = os.path.abspath(working_directory)
-        tar_dir = os.path.normpath(os.path.join(working_dir_abs, directory))
-        is_valid_dir = os.path.commonpath([working_dir_abs, tar_dir]) == working_dir_abs
-
-        if not is_valid_dir:
-            return f"Error: Cannot list \"{directory}\" as it is outside the permitted working directory"
-        
+        tar_dir = get_abs_path(working_directory=working_directory, path=directory)
         if not os.path.isdir(tar_dir):
             return f"f'Error: \"{tar_dir}\" is not a directory'"
         
