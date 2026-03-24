@@ -3,7 +3,11 @@ from functions.helper_funcitons import get_abs_path
 
 def write_file(working_directory, file_path, content):
     try:
-        tar_dir = get_abs_path(working_directory=working_directory, path=file_path)
+        tar_dir, is_valid = get_abs_path(working_directory=working_directory, path=file_path)
+
+        if not is_valid:
+            return f'Error: Cannot write to "{file_path}" as it is outside the permitted working directory'
+        
         if os.path.isdir(tar_dir):
             return f"Cannot write to \"{tar_dir}\" as it is a directory"
         
