@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
-from google import genai
+from google.genai import types, Client
 from system_prompt import system_prompt as sp
+from functions.call_function import available_functions
 import os, argparse
 
 load_dotenv()
@@ -11,9 +12,9 @@ if api_key is None:
 
 def main():
     args = get_cl_arg()
-    user_prompts = [genai.types.Content(
+    user_prompts = [types.Content(
          role="user",
-         parts=[genai.types.Part(text=args.user_prompt)]
+         parts=[types.Part(text=args.user_prompt)]
     )]
 
     response = llm_request(user_prompts)
@@ -21,7 +22,11 @@ def main():
         print(f"User prompt: {args.user_prompt}")  
         display_token_data(metadata=response.usage_metadata)
         
-    print(f"Response:\n{response.text}")
+    if response.function_calls:
+        for fc in response.function_calls:
+            print(f"Calling function: {fc.name}({fc.args})")
+    else:
+        print(f"Response:\n{response.text}")
 
 
 def get_cl_arg():
@@ -31,16 +36,17 @@ def get_cl_arg():
     return parser.parse_args()
 
 
-def llm_request(contents: list[genai.types.Content]):    
-    client = genai.Client(api_key=api_key)
+def llm_request(contents: list[types.Content]):    
+    client = Client(api_key=api_key)
     model = 'gemini-2.5-flash'
     
     return client.models.generate_content(
         model=model, 
         contents=contents, # type: ignore
-        config=genai.types.GenerateContentConfig(
-            system_instruction=sp(),
-            temperature=0
+        config=types.GenerateContentConfig(
+            tools=[available_functions],
+            system_instruction=sp,
+            temperature=0,
             ),
     )
 
