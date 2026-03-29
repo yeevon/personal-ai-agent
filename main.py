@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from google import genai
+from system_prompt import system_prompt as sp
 import os, argparse
 
 load_dotenv()
@@ -35,7 +36,12 @@ def llm_request(contents: list[genai.types.Content]):
     model = 'gemini-2.5-flash'
     
     return client.models.generate_content(
-        model=model, contents=contents # type: ignore
+        model=model, 
+        contents=contents, # type: ignore
+        config=genai.types.GenerateContentConfig(
+            system_instruction=sp(),
+            temperature=0
+            ),
     )
 
 
