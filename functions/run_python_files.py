@@ -1,5 +1,6 @@
 import os, subprocess
 from functions.helper_funcitons import get_abs_path
+from google.genai import types
 
 def run_python_file(working_directory, file_path, args=None):
     try:
@@ -33,3 +34,25 @@ def run_python_file(working_directory, file_path, args=None):
     
     except Exception as err:
         return f'Error: executing Python file: {err}'
+    
+schema_run_python_files = types.FunctionDeclaration(
+    name="run_python_files",
+    description="Allow the llm to run execute python files located in specific directories",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file-path": types.Schema(
+                type=types.Type.STRING,
+                description="Path to the python file to run, relative to working dir.",
+            ),
+            "args": types.Schema(
+                type=types.Type.ARRAY,
+                items=types.Schema(
+                    type=types.Type.STRING,
+                ),
+                description="Optional list of argument to pass to the python script"
+            )
+        },
+        required=["file-path"]
+    ),
+)

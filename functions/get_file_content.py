@@ -1,5 +1,6 @@
 import os
 from functions.helper_funcitons import get_abs_path
+from google.genai import types
 from config import MAX_CHARS
 
 def get_file_content(working_directory, file_path):
@@ -30,3 +31,18 @@ def read_file(target_dir) -> str:
 
     except Exception as err:
         raise RuntimeError(f"read_file failed: No such file or dir was found. - '{target_dir}' - {err}")
+    
+schema_get_files_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="CAT content from a file",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file-path": types.Schema(
+                type=types.Type.STRING,
+                description="Returns the content of the spcified file",
+            ),
+        },
+        required=["file-path"]
+    ),
+)

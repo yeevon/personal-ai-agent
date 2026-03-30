@@ -1,5 +1,6 @@
 import os
 from functions.helper_funcitons import get_abs_path
+from google.genai import types
 
 def write_file(working_directory, file_path, content):
     try:
@@ -24,3 +25,22 @@ def write_file(working_directory, file_path, content):
 
     except Exception as err:
         return f'Error: {err}'
+    
+schema_write_to_file = types.FunctionDeclaration(
+    name="write_file",
+    description="Allow the llm the ability to update and modify files",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file-path": types.Schema(
+                type=types.Type.STRING,
+                description="Path to the file to write, relative to working directory",
+            ),
+            "content": types.Schema(
+                type=types.Type.STRING,
+                description="Text content to write to the file",
+            )
+        },
+        required=["file-path", "content"]
+    ),
+)

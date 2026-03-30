@@ -47,7 +47,7 @@ def llm_request(contents: list[types.Content]):
             tools=[available_functions],
             system_instruction=sp,
             temperature=0,
-            ),
+            )
     )
 
 
