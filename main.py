@@ -17,30 +17,47 @@ def main():
          parts=[types.Part(text=args.user_prompt)]
     )]
 
-    response = llm_request(user_prompts)
-    if args.verbose:
-        print(f"User prompt: {args.user_prompt}")  
-        display_token_data(metadata=response.usage_metadata)
+    agent_loop(user_prompts=user_prompts, args=args)
         
-    if not response.function_calls:
-        print(f"Response:\n{response.text}")
-        return
     
-    func_results = []
-    for fc in response.function_calls:
-        # print(f"Calling function: {fc.name}({fc.args})")
-        function_call_result = call_function(fc, args.verbose)
 
-        if not function_call_result.parts:
-            raise Exception(f"Error: {fc.name} parts list is empty")
-        
-        if not function_call_result.parts[0].function_response:
-            raise Exception(f"Error: {fc.name} contains invalid respose")
-
-        func_results.append(function_call_result.parts[0])
+def agent_loop(user_prompts: list, args):
+    messages = list(user_prompts)
+    for _ in range(20):        
+        response = llm_request(messages)
 
         if args.verbose:
-            print(f"-> {function_call_result.parts[0].function_response}")
+            print(f"User prompt: {args.user_prompt}")  
+            display_token_data(metadata=response.usage_metadata)
+
+        if not response.function_calls:
+            print(f"Response:\n{response.text}")
+            return
+    
+        func_results = []
+        if response.candidates:
+            for rc in response.candidates:
+                if rc.content and rc.content.parts:
+                    messages.append(types.Content(role="model", parts=rc.content.parts))
+
+        for fc in response.function_calls:
+            function_call_result = call_function(fc, args.verbose)
+
+            if not function_call_result.parts:
+                raise Exception(f"Error: {fc.name} parts list is empty")
+            
+            if not function_call_result.parts[0].function_response:
+                raise Exception(f"Error: {fc.name} contains invalid respose")
+
+            func_results.append(function_call_result.parts[0])
+
+            if args.verbose:
+                print(f"-> {function_call_result.parts[0].function_response}")
+        
+        messages.append(types.Content(role="user", parts=func_results))
+    
+    print(f"Error: unable to complete {messages}")
+    return 1
             
 
 def get_cl_arg():
