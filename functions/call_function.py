@@ -1,7 +1,7 @@
-from functions.get_files_info import schema_get_files_info
-from functions.get_file_content import schema_get_files_content
-from functions.write_to_file import schema_write_to_file
-from functions.run_python_files import schema_run_python_files
+from functions.get_files_info import schema_get_files_info, get_files_info
+from functions.get_file_content import schema_get_files_content, get_file_content
+from functions.write_to_file import schema_write_to_file, write_file
+from functions.run_python_files import schema_run_python_files, run_python_files
 from google.genai import types
 
 available_functions = types.Tool(
@@ -12,3 +12,42 @@ available_functions = types.Tool(
         schema_write_to_file
         ]
 )
+
+def call_function(function_call: types.FunctionCall, verbose=False):
+    if verbose:
+        print(f"Calling function: {function_call.name}({function_call.args})")
+    else:
+        print(f"Calling function: {function_call.name}")
+              
+    function_map = {
+    "get_file_content": get_file_content,
+    "get_files_info": get_files_info,
+    "write_file": write_file,
+    "run_python_files": run_python_files
+    }
+
+    function_name = function_call.name or ""
+    if function_name not in function_map:
+        return types.Content(
+            role="tool",
+            parts=[
+                types.Part.from_function_response(
+                    name=function_name,
+                    response={"error": f"Unkown function: {function_name}"},
+                )
+            ],
+        )
+    
+    args = dict(function_call.args) if function_call.args else {}
+    args["working_directory"] = "./calculator"
+
+    function_result = function_map[function_name](**args)
+    return types.Content(
+        role="tool",
+        parts=[
+            types.Part.from_function_response(
+                name=function_name,
+                response={"result": function_result},
+            )
+        ],
+    )

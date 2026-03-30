@@ -2,7 +2,7 @@ import os, subprocess
 from functions.helper_funcitons import get_abs_path
 from google.genai import types
 
-def run_python_file(working_directory, file_path, args=None):
+def run_python_files(working_directory, file_path, args=None):
     try:
         tar_dir, is_valid = get_abs_path(working_directory=working_directory, path=file_path)
 
@@ -41,7 +41,7 @@ schema_run_python_files = types.FunctionDeclaration(
     parameters=types.Schema(
         type=types.Type.OBJECT,
         properties={
-            "file-path": types.Schema(
+            "file_path": types.Schema(
                 type=types.Type.STRING,
                 description="Path to the python file to run, relative to working dir.",
             ),
@@ -53,6 +53,6 @@ schema_run_python_files = types.FunctionDeclaration(
                 description="Optional list of argument to pass to the python script"
             )
         },
-        required=["file-path"]
+        required=["file_path"]
     ),
 )

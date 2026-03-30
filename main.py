@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 from google.genai import types, Client
 from system_prompt import system_prompt as sp
-from functions.call_function import available_functions
+from functions.call_function import available_functions, call_function
 import os, argparse
 
 load_dotenv()
@@ -22,12 +22,26 @@ def main():
         print(f"User prompt: {args.user_prompt}")  
         display_token_data(metadata=response.usage_metadata)
         
-    if response.function_calls:
-        for fc in response.function_calls:
-            print(f"Calling function: {fc.name}({fc.args})")
-    else:
+    if not response.function_calls:
         print(f"Response:\n{response.text}")
+        return
+    
+    func_results = []
+    for fc in response.function_calls:
+        # print(f"Calling function: {fc.name}({fc.args})")
+        function_call_result = call_function(fc, args.verbose)
 
+        if not function_call_result.parts:
+            raise Exception(f"Error: {fc.name} parts list is empty")
+        
+        if not function_call_result.parts[0].function_response:
+            raise Exception(f"Error: {fc.name} contains invalid respose")
+
+        func_results.append(function_call_result.parts[0])
+
+        if args.verbose:
+            print(f"-> {function_call_result.parts[0].function_response}")
+            
 
 def get_cl_arg():
     parser = argparse.ArgumentParser(description="Chatbot")
