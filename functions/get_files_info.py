@@ -1,5 +1,5 @@
 import os
-from functions.helper_funcitons import get_abs_path
+from functions.helper_functions import get_abs_path
 from google.genai import types
 from pathlib import Path
 
@@ -13,7 +13,7 @@ def get_files_info(working_directory, directory ="."):
             return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
         
         if not os.path.isdir(tar_dir):
-            return f"f'Error: \"{tar_dir}\" is not a directory'"
+            return f"Error: \"{tar_dir}\" is not a directory"
         
         path = Path(tar_dir)
         for item in path.iterdir():

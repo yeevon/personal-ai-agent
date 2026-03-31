@@ -48,6 +48,18 @@ uv run main.py "Write hello to main.txt" --verbose
 
 ---
 
+## Known Issues
+
+- **`main.py:43`** — `response.function_calls` accessed without null check; can cause a runtime crash if candidates exist but no function calls are returned
+- **`calculator/pkg/calculator.py:9`** — division by zero is unhandled; crashes instead of returning a graceful error message
+- **`functions/get_file_content.py:24`** / **`functions/write_to_file.py:18`** — `open()` calls missing `encoding='utf-8'`; may break on non-UTF-8 systems
+- **`functions/run_python_files.py:14`** — `.py` extension check uses `[-3:]` string slice instead of `.endswith('.py')`
+- **`main.py:72`** — model name `'gemini-2.5-flash'` hardcoded; should live in `config.py`
+- **`main.py:26`** — agent loop limit (20) hardcoded; should live in `config.py`
+- **Multiple function files** — broad `except Exception` used throughout; masks specific errors and makes debugging harder
+
+---
+
 ## Roadmap
 
 ### 1. Local Ollama Support

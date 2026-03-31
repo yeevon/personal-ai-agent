@@ -47,7 +47,7 @@ def agent_loop(user_prompts: list, args):
                 raise Exception(f"Error: {fc.name} parts list is empty")
             
             if not function_call_result.parts[0].function_response:
-                raise Exception(f"Error: {fc.name} contains invalid respose")
+                raise Exception(f"Error: {fc.name} contains invalid response")
 
             func_results.append(function_call_result.parts[0])
 

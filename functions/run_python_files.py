@@ -1,5 +1,5 @@
 import os, subprocess
-from functions.helper_funcitons import get_abs_path
+from functions.helper_functions import get_abs_path
 from google.genai import types
 
 def run_python_files(working_directory, file_path, args=None):
