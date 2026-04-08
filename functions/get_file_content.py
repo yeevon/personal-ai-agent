@@ -21,7 +21,7 @@ def get_file_content(working_directory, file_path):
 
 def read_file(target_dir) -> str:
     try:
-        with open(target_dir, 'r') as file:
+        with open(target_dir, 'r', encoding='utf-8') as file:
             content =  file.read(MAX_CHARS)
 
             if file.read(1):
