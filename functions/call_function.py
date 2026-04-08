@@ -1,12 +1,10 @@
-from dotenv import load_dotenv # type: ignore
+from dotenv import load_dotenv
 from config import WORKING_DIR
 from functions.get_files_info import schema_get_files_info, get_files_info
 from functions.get_file_content import schema_get_files_content, get_file_content
 from functions.run_python_files import schema_run_python_files, run_python_files
 from functions.write_to_file import schema_write_to_file, write_file
-from google.genai import types # type: ignore
-
-import os
+from google.genai import types
 
 import os
 
