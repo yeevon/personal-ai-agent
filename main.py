@@ -7,9 +7,9 @@ from config import LOOPS, MODEL
 import os, argparse
 
 load_dotenv()
-api_key = os.environ.get("GEMINI_API_KEY")
+_api_key = os.environ.get("GEMINI_API_KEY")
 
-if api_key is None:
+if _api_key is None:
         raise RuntimeError("API Key not found")
 
 def main():
@@ -24,9 +24,12 @@ def main():
     
 
 def agent_loop(user_prompts: list, args):
+    client = Client(api_key=_api_key)
+    model = MODEL
     messages = list(user_prompts)
+
     for _ in range(LOOPS):        
-        response = llm_request(messages)
+        response = llm_request(client, model, messages)
 
         if args.verbose:
             print(f"User prompt: {args.user_prompt}")  
@@ -69,9 +72,7 @@ def get_cl_arg():
     return parser.parse_args()
 
 
-def llm_request(contents: list[types.Content]):    
-    client = Client(api_key=api_key)
-    model = MODEL
+def llm_request(client, model, contents: list[types.Content]):    
     
     return client.models.generate_content(
         model=model, 
