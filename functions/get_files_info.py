@@ -1,7 +1,8 @@
-import os
 from functions.helper_functions import get_abs_path
 from google.genai import types
 from pathlib import Path
+
+import os
 
 
 def get_files_info(working_directory, directory ="."):
@@ -13,14 +14,14 @@ def get_files_info(working_directory, directory ="."):
             return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
         
         if not os.path.isdir(tar_dir):
-            return f"Error: \"{tar_dir}\" is not a directory"
+            return f"Error: \"{directory}\" is not a directory"
         
         path = Path(tar_dir)
         for item in path.iterdir():
             file_data.append(f"- {item.name}: file_size={os.path.getsize(item)} bytes, is_dir={item.is_dir()}")
             
     except Exception as err:
-        return f"Error:{ err}"
+        return f"Error: {err}"
     
     return "\n".join(file_data)
 
