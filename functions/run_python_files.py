@@ -11,7 +11,7 @@ def run_python_files(working_directory, file_path, args=None):
         
         if not os.path.isfile(tar_dir):
             return f'Error: "{file_path}" does not exist or is not a regular file'
-        elif tar_dir[-3:] != ".py":
+        elif not tar_dir.endswith(".py"):
             return f'Error: "{file_path}" is not a Python file'
         
         command = ["python", tar_dir]
