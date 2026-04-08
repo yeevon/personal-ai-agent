@@ -2,7 +2,7 @@ from dotenv import load_dotenv # type: ignore
 from functions.call_function import available_functions, call_function
 from google.genai import types, Client # type: ignore
 from system_prompt import system_prompt as sp
-
+from config import LOOPS, MODEL
 
 import os, argparse
 
@@ -25,7 +25,7 @@ def main():
 
 def agent_loop(user_prompts: list, args):
     messages = list(user_prompts)
-    for _ in range(20):        
+    for _ in range(LOOPS):        
         response = llm_request(messages)
 
         if args.verbose:
@@ -71,7 +71,7 @@ def get_cl_arg():
 
 def llm_request(contents: list[types.Content]):    
     client = Client(api_key=api_key)
-    model = 'gemini-2.5-flash'
+    model = MODEL
     
     return client.models.generate_content(
         model=model, 

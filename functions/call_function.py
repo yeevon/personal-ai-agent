@@ -1,4 +1,5 @@
 from dotenv import load_dotenv # type: ignore
+from config import WORKING_DIR
 from functions.get_files_info import schema_get_files_info, get_files_info
 from functions.get_file_content import schema_get_files_content, get_file_content
 from functions.run_python_files import schema_run_python_files, run_python_files
@@ -47,11 +48,10 @@ def call_function(function_call: types.FunctionCall, verbose=False):
     
     args = dict(function_call.args) if function_call.args else {}
     
-    dir = os.environ.get("WORKING_DIR")
-    if not dir or not os.path.isdir(dir):
+    if not WORKING_DIR or not os.path.isdir(WORKING_DIR):
         raise ValueError("Must set working directory in Config.py")
     
-    args["working_directory"] = dir
+    args["working_directory"] = WORKING_DIR
 
     function_result = function_map[function_name](**args)
     return types.Content(
