@@ -1,8 +1,13 @@
+from dotenv import load_dotenv # type: ignore
 from functions.get_files_info import schema_get_files_info, get_files_info
 from functions.get_file_content import schema_get_files_content, get_file_content
-from functions.write_to_file import schema_write_to_file, write_file
 from functions.run_python_files import schema_run_python_files, run_python_files
-from google.genai import types
+from functions.write_to_file import schema_write_to_file, write_file
+from google.genai import types # type: ignore
+
+import os
+
+load_dotenv()
 
 available_functions = types.Tool(
     function_declarations=[
@@ -39,7 +44,7 @@ def call_function(function_call: types.FunctionCall, verbose=False):
         )
     
     args = dict(function_call.args) if function_call.args else {}
-    args["working_directory"] = "./calculator"
+    args["working_directory"] = os.environ.get("WORKING_DIR")
 
     function_result = function_map[function_name](**args)
     return types.Content(
