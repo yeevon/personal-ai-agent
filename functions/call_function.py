@@ -7,6 +7,8 @@ from google.genai import types # type: ignore
 
 import os
 
+import os
+
 load_dotenv()
 
 available_functions = types.Tool(
@@ -44,7 +46,12 @@ def call_function(function_call: types.FunctionCall, verbose=False):
         )
     
     args = dict(function_call.args) if function_call.args else {}
-    args["working_directory"] = os.environ.get("WORKING_DIR")
+    
+    dir = os.environ.get("WORKING_DIR")
+    if not dir or not os.path.isdir(dir):
+        raise ValueError("Must set working directory in Config.py")
+    
+    args["working_directory"] = dir
 
     function_result = function_map[function_name](**args)
     return types.Content(
