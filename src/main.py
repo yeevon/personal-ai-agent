@@ -1,8 +1,8 @@
-from dotenv import load_dotenv # type: ignore
+from dotenv import load_dotenv
 from functions.call_function import available_functions, call_function
-from google.genai import types, Client # type: ignore
-from system_prompt import system_prompt as sp
-from config import LOOPS, MODEL
+from google.genai import types, Client
+from src.system_prompt import system_prompt as sp
+from src.config import LOOPS, MODEL
 
 import os, argparse
 

@@ -1,7 +1,7 @@
 import os
 from functions.helper_functions import get_abs_path
 from google.genai import types
-from config import MAX_CHARS
+from src.config import MAX_CHARS
 
 def get_file_content(working_directory, file_path):
     try:

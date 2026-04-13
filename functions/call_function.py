@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from config import WORKING_DIR
+from src.config import WORKING_DIR
 from functions.get_files_info import schema_get_files_info, get_files_info
 from functions.get_file_content import schema_get_files_content, get_file_content
 from functions.run_python_files import schema_run_python_files, run_python_files

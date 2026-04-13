@@ -1,4 +1,4 @@
-from config import MAX_CHARS
+from src.config import MAX_CHARS
 from functions.get_file_content import get_file_content
 
 content = get_file_content("calculator", "lorem.txt")
