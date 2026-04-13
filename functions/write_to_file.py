@@ -10,7 +10,7 @@ def write_file(working_directory, file_path, content):
             return f'Error: Cannot write to "{file_path}" as it is outside the permitted working directory'
         
         if os.path.isdir(tar_dir):
-            return f"Cannot write to \"{tar_dir}\" as it is a directory"
+            return f'Error: Cannot write to "{file_path}" as it is a directory'
         
         # Creates any missing dirs
         os.makedirs(os.path.dirname(tar_dir), exist_ok=True)
